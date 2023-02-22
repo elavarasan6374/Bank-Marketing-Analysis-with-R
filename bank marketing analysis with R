@@ -1,0 +1,152 @@
+# Bank-marketing-analysis-with-R
+library(dplyr)
+## 
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+library(lattice)
+library(ggplot2)
+df<-read.csv("bank.csv")
+df
+filter(df,age<=30)
+filter(df,job=="technician" )
+filter(df,job=="entrepreneur")
+
+filter(df,job=="blue-collar")
+str(df)
+## 'data.frame':    45211 obs. of  17 variables:
+##  $ age      : int  58 44 33 47 33 35 28 42 58 43 ...
+##  $ job      : chr  "management" "technician" "entrepreneur" "blue-collar" ...
+##  $ marital  : chr  "married" "single" "married" "married" ...
+##  $ education: chr  "tertiary" "secondary" "secondary" "unknown" ...
+##  $ default  : chr  "no" "no" "no" "no" ...
+##  $ balance  : int  2143 29 2 1506 1 231 447 2 121 593 ...
+##  $ housing  : chr  "yes" "yes" "yes" "yes" ...
+##  $ loan     : chr  "no" "no" "yes" "no" ...
+##  $ contact  : chr  "unknown" "unknown" "unknown" "unknown" ...
+##  $ day      : int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ month    : chr  "may" "may" "may" "may" ...
+##  $ duration : int  261 151 76 92 198 139 217 380 50 55 ...
+##  $ campaign : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ pdays    : int  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...
+##  $ previous : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ poutcome : chr  "unknown" "unknown" "unknown" "unknown" ...
+##  $ y        : chr  "no" "no" "no" "no" ...
+summary(df)
+##       age            job              marital           education        
+##  Min.   :18.00   Length:45211       Length:45211       Length:45211      
+##  1st Qu.:33.00   Class :character   Class :character   Class :character  
+##  Median :39.00   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   :40.94                                                           
+##  3rd Qu.:48.00                                                           
+##  Max.   :95.00                                                           
+##    default             balance         housing              loan          
+##  Length:45211       Min.   : -8019   Length:45211       Length:45211      
+##  Class :character   1st Qu.:    72   Class :character   Class :character  
+##  Mode  :character   Median :   448   Mode  :character   Mode  :character  
+##                     Mean   :  1362                                        
+##                     3rd Qu.:  1428                                        
+##                     Max.   :102127                                        
+##    contact               day           month              duration     
+##  Length:45211       Min.   : 1.00   Length:45211       Min.   :   0.0  
+##  Class :character   1st Qu.: 8.00   Class :character   1st Qu.: 103.0  
+##  Mode  :character   Median :16.00   Mode  :character   Median : 180.0  
+##                     Mean   :15.81                      Mean   : 258.2  
+##                     3rd Qu.:21.00                      3rd Qu.: 319.0  
+##                     Max.   :31.00                      Max.   :4918.0  
+##     campaign          pdays          previous          poutcome        
+##  Min.   : 1.000   Min.   : -1.0   Min.   :  0.0000   Length:45211      
+##  1st Qu.: 1.000   1st Qu.: -1.0   1st Qu.:  0.0000   Class :character  
+##  Median : 2.000   Median : -1.0   Median :  0.0000   Mode  :character  
+##  Mean   : 2.764   Mean   : 40.2   Mean   :  0.5803                     
+##  3rd Qu.: 3.000   3rd Qu.: -1.0   3rd Qu.:  0.0000                     
+##  Max.   :63.000   Max.   :871.0   Max.   :275.0000                     
+##       y            
+##  Length:45211      
+##  Class :character  
+##  Mode  :character  
+sample_index=sample(1:nrow(df),20,replace = FALSE)
+sample_index
+##  [1] 11762 35161 11737 32192 23307 36291 41704 29132 14636 23647  6686 36438
+## [13] 27152 11273  9101 26244  3456 10427 40865 42259
+str(df$age)
+##  int [1:45211] 58 44 33 47 33 35 28 42 58 43 ...
+str(df$job)
+##  chr [1:45211] "management" "technician" "entrepreneur" "blue-collar" ...
+str(df$marital)
+##  chr [1:45211] "married" "single" "married" "married" "single" "married" ...
+str(df$education)
+##  chr [1:45211] "tertiary" "secondary" "secondary" "unknown" "unknown" ...
+str(df$y)
+##  chr [1:45211] "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" "no" ...
+s1=select(df,2)
+levels(s1)
+## NULL
+t=table(s1)
+t
+## job
+##        admin.   blue-collar  entrepreneur     housemaid    management 
+##          5171          9732          1487          1240          9458 
+##       retired self-employed      services       student    technician 
+##          2264          1579          4154           938          7597 
+##    unemployed       unknown 
+##          1303           288
+
+a=table(df$job)
+b=table(df$education)
+c=table(df$marital)
+pie(a,main = "job status for pie chart",col = rainbow(length(df)))
+
+pie(b,main = "education status for pie chart",col = rainbow(length(df)))
+pie(c,main = "marital status for pie chart",col = rainbow(length(df)))
+
+tablem=table(df$education,df$marital)
+tablem
+##            
+##             divorced married single
+##   primary        752    5246    853
+##   secondary     2815   13770   6617
+##   tertiary      1471    7038   4792
+##   unknown        169    1160    528
+
+
+
+#histogram
+
+histogram(~age,data =df,main = "age distribution level",col = "pink")
+histogram(~age|contact,data =df,main = "communication with people",col = "lightblue")
+histogram(~age|marital,data = df,main = "age by marital status")
+histogram(~age|contact,data =df,main = "communication with people",col = "lightblue")
+histogram(~age|education,data =df,main = "age by education level",col = "red")
+histogram(~age|y,data =df,main = "age of people is subscriped",col = "green")
+
+#box plot
+ggplot(df,aes(x=education,y=age))+geom_boxplot()+
+facet_wrap(~contact,scales = "free_y")+
+labs(x="Education",y="age",title = "age by education level")+
+theme(axis.text.x = element_text(angle = 90))
+
+ggplot(df,aes(x=y,y=age))+geom_boxplot()+
+facet_wrap(~marital,scales = "free_y")+
+labs(x="subscriped",y="age",title = "age of people subscribed")+
+theme(axis.text.x = element_text(angle = 90))
+#scatterplot
+ggplot(df,aes(x=job,y=age,color =y))+geom_point()+
+facet_wrap(~education,scales = "freely")+
+labs(x="job",y="age",title = "frequency distribution")+
+theme(axis.text.x = element_text(angle = 90))
+#barchat
+ggplot(df,aes(x=job,fill=y)) + geom_bar(position="fill") +scale_fill_brewer(palette="set2")+
+facet_wrap(~education,scales = "free_y")+
+labs(x="job",title = "frequency distribution")+
+theme(axis.text.x = element_text(angle = 90))
+ggplot(df,aes(x=education,fill=y)) + geom_bar(position="fill") +scale_fill_brewer(palette="set2")+
+facet_wrap(~marital,scales = "free_y")+
+labs(x="job",title = "frequency distribution")+
+theme(axis.text.x = element_text(angle = 90))
+
+
